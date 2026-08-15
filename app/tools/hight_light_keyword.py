@@ -11,7 +11,7 @@ def highlight_keyword(keyword, sentence):
     chinese_pattern = re.compile(u'[\u4e00-\u9fa5]')
     chinese_keyword_list =  re.findall(chinese_pattern, keyword) # 中文以每个单字作为关键字
     non_chinese_keyword = re.sub(chinese_pattern,'', keyword.lower())
-    non_chinese_keyword_list = re.findall('\w+', non_chinese_keyword)  # 其他字符串以单词作为关键词
+    non_chinese_keyword_list = re.findall(r'\w+', non_chinese_keyword)  # 其他字符串以单词作为关键词
     keyword_list = chinese_keyword_list + non_chinese_keyword_list
     highlight_pattern = '|'.join(keyword_list)  # 拼接关键词正则模式'keyword1|keyword2|keyword3'
     sentence_split_list = []

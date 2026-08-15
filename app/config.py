@@ -7,12 +7,12 @@
 
 import configparser
 from pathlib import Path
-from pkg_resources import Requirement, resource_filename
 
 # 优先取项目project的配置文件内容
 try:
+    from pkg_resources import Requirement, resource_filename
     pkg_config_name = resource_filename(Requirement.parse("magnet-searcher"), "config.ini")
-except:
+except Exception:
     pkg_config_name = "config.ini"
 config = configparser.ConfigParser()
 config.read(pkg_config_name)

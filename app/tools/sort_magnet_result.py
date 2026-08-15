@@ -14,8 +14,11 @@ def sort_magnet_result(magnet_result: list, sort_key: int, is_reverse: bool = Tr
     else:
         if sort_key == SORTED_BY_DATE:
             sort_key_as_str = 'format_create_date'
+            key_func = lambda k: k.get(sort_key_as_str, '0')
         elif sort_key == SORTED_BY_SIZE:
             sort_key_as_str = 'size_as_mb'
+            key_func = lambda k: k.get(sort_key_as_str, 0)
         elif sort_key == SORTED_BY_POPULAR:
             sort_key_as_str = 'popular'
-        magnet_result.sort(key=lambda k: (k.get(sort_key_as_str)), reverse=is_reverse)
+            key_func = lambda k: float(k.get(sort_key_as_str) or 0)
+        magnet_result.sort(key=key_func, reverse=is_reverse)

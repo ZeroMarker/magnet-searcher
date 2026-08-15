@@ -29,7 +29,6 @@
 '''
 
 import json
-from pkg_resources import Requirement, resource_filename
 import configparser
 from .config import readable_config_name
 
@@ -44,8 +43,9 @@ def load_json(path):
 config = configparser.ConfigParser()
 config.read(readable_config_name)
 try:
+    from pkg_resources import Requirement, resource_filename
     pkg_rules_path = resource_filename(Requirement.parse("magnet-searcher"), "rules.json")
-except:
+except Exception:
     pkg_rules_path = "rules.json"
 project_rules_path = config.get('PROJECT PATH', 'rules_path', fallback=False)
 if project_rules_path:

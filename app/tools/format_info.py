@@ -30,17 +30,24 @@ def format_size(cook_size: str) -> (str, float):
     :param cook_size: 爬取到的未经处理的size字符串
     :return: 格式化的size形式, 数值MB
     """
-    size_info = re.sub(u'[\u4e00-\u9fa5]|\s', '', cook_size)
-    is_find_size = re.search(r'(\d+\.*\d*)(\w*)', size_info)
+    size_info = re.sub(r'[\u4e00-\u9fa5]|\s', '', str(cook_size))
+    is_find_size = re.search(r'(\d+\.*\d*)\s*([KMGTP]?i?B?)', size_info, re.I)
     if is_find_size:
         size_num, size_capacity = is_find_size.groups()
-        if size_num:
-            if size_capacity.lower() in ['m', 'mb']:
+        if size_num and size_capacity:
+            capacity_lower = size_capacity.lower()
+            if capacity_lower in ['b']:
+                size_as_mb = float(size_num) / 1024 / 1024
+            elif capacity_lower in ['k', 'kb', 'kib']:
+                size_as_mb = float(size_num) / 1024
+            elif capacity_lower in ['m', 'mb', 'mib']:
                 size_as_mb = float(size_num)
-            elif size_capacity.lower() in ['g', 'gb']:
+            elif capacity_lower in ['g', 'gb', 'gib']:
                 size_as_mb = float(size_num) * 1024
+            elif capacity_lower in ['t', 'tb', 'tib']:
+                size_as_mb = float(size_num) * 1024 * 1024
             else:
-                raise FormatError('capacity unit not in m, mb, g, gb when formatting size capacity.')
+                raise FormatError('capacity unit not in b/kb/mb/gb/tb when formatting size capacity.')
         else:
             raise FormatError('regex pattern not getting num when formatting size.')
     else:
@@ -54,33 +61,44 @@ def format_date(cook_date: str):
     :param cook_date: 爬取到的未经处理的日期字符串
     :return: 可读性更高的日期字符串，格式化的日期
     """
-    is_find_format_date = re.search(r'(\d{4})\D*(\d{1,2})*\D*(\d*)', cook_date)
-    if is_find_format_date:
-        useful_date = list(filter(None, list(is_find_format_date.groups())))
-        date_format_shape = "-".join(useful_date)
-        if len(useful_date) == 1:
-            local_time = arrow.get(date_format_shape, "YYYY")
-        elif len(useful_date) == 2:
-            local_time = arrow.get(date_format_shape, "YYYY-M")
-        else:
-            local_time = arrow.get(date_format_shape, "YYYY-M-D")
+    cook_date = str(cook_date).strip()
+    # 1) YYYY-M-D / YYYY-M-D HH:MM 完整日期
+    is_find_full_date = re.search(r'(\d{4})\D+(\d{1,2})\D+(\d{1,2})', cook_date)
+    if is_find_full_date:
+        local_time = arrow.get("%s-%s-%s" % is_find_full_date.groups(), "YYYY-M-D")
     else:
-        is_find_date_info = re.search(r'(\d+\.*\d*)(\D+)', cook_date)
-        if is_find_date_info:
-            date_num, date_unit = is_find_date_info.groups()
-            is_find_date_unit = re.search(
-                r'(秒|刚|现|now|sec|s)|(分|min|m)|(时|hour|h)|(天|day)|(星期|周|week)|(月|mon)|(年|year)',
-                date_unit.lower())
-            if is_find_date_unit:
-                date_units = is_find_date_unit.groups()
-                sec, minute, hour, day, week, month, year = [float(date_num) if date_unit else 0 for date_unit in
-                                                             date_units]
-                local_time = arrow.now().shift(seconds=-sec, minutes=-minute, hours=-hour, days=-day, weeks=-week,
-                                               months=-month, years=-year)
-            else:
-                raise FormatError('can not find date unit when formatting date info.')
+        is_find_year_month = re.search(r'(\d{4})\D+(\d{1,2})', cook_date)
+        if is_find_year_month:
+            local_time = arrow.get("%s-%s" % is_find_year_month.groups(), "YYYY-M")
         else:
-            raise FormatError('regex pattern not getting date info when formatting date.')
+            # 2) M-D (可含 YYYY，如 TPB 的 "04-19 2014" / "04-25 16:35"), 无年份时默认当前年份
+            is_find_month_day = re.search(r'(\d{1,2})[-/月.]\s*(\d{1,2})', cook_date)
+            if is_find_month_day:
+                is_find_year_anywhere = re.search(r'(\d{4})', cook_date)
+                year = is_find_year_anywhere.group(1) if is_find_year_anywhere else arrow.now().year
+                local_time = arrow.get("%s-%s-%s" % (year, is_find_month_day.group(1), is_find_month_day.group(2)), "YYYY-M-D")
+            else:
+                is_find_year = re.search(r'(\d{4})', cook_date)
+                if is_find_year:
+                    local_time = arrow.get(is_find_year.group(1), "YYYY")
+                else:
+                    # 3) 相对日期如"3年前"、"1天前"、"2 days ago"
+                    is_find_date_info = re.search(r'(\d+\.*\d*)(\D+)', cook_date)
+                    if is_find_date_info:
+                        date_num, date_unit = is_find_date_info.groups()
+                        is_find_date_unit = re.search(
+                            r'(秒|刚|现|now|sec|s)|(分|min|m)|(时|hour|h)|(天|day)|(星期|周|week)|(月|mon)|(年|year)',
+                            date_unit.lower())
+                        if is_find_date_unit:
+                            date_units = is_find_date_unit.groups()
+                            sec, minute, hour, day, week, month, year = [float(date_num) if date_unit else 0 for date_unit in
+                                                                         date_units]
+                            local_time = arrow.now().shift(seconds=-sec, minutes=-minute, hours=-hour, days=-day, weeks=-week,
+                                                           months=-month, years=-year)
+                        else:
+                            raise FormatError('can not find date unit when formatting date info.')
+                    else:
+                        raise FormatError('regex pattern not getting date info when formatting date.')
     utc_time = local_time.to('utc')
     local_time_as_str = local_time.format("YYYY-MM-DD HH:mm:ss")
 

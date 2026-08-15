@@ -19,7 +19,6 @@
     "size_xpath": "string(div[@class='sbar']/span[4]/b)",
     "popular_xpath": "string(div[@class='sbar']/span[6]/b)"
   },
-
   "zhongziso": {
     "source_name": "zhongziso",
     "active": false,
@@ -40,10 +39,9 @@
     "size_xpath": "string(tr[2]/td[2]/strong)",
     "popular_xpath": "string(tr[2]/td[3]/strong)"
   },
-
   "btants": {
     "source_name": "btants",
-    "active": true,
+    "active": false,
     "base_url": "http://www.btgat.com",
     "query_tail": "/search/{keyword}-{sorted_by}-{page}",
     "sorted_by": {
@@ -61,31 +59,29 @@
     "size_xpath": "string(div[@class='item-bar']/span[4]/b)",
     "popular_xpath": "string(div[@class='item-bar']/span[2]/b)"
   },
-
   "nyaa": {
     "source_name": "nyaa",
-    "active": false,
-    "base_url": "https://sukebei.nyaa.si",
+    "active": true,
+    "base_url": "https://nyaa.si",
     "query_tail": "/?f=0&c=0_0&q={keyword}&p={page}&s={sorted_by}&o=desc",
     "sorted_by": {
       "default": "id",
       "date": "id",
       "size": "size",
-      "popular": "downloads"
+      "popular": "seeders"
     },
     "proxy_channel": true,
-    "judge_result_xpath": "/html/body/div/div[@class='table-responsive']/table/tbody/tr",
-    "content_list_xpath": "/html/body/div/div[@class='table-responsive']/table/tbody/tr",
-    "title_content_xpath": "string(td[2]/a)",
+    "judge_result_xpath": "//table[contains(@class,'torrent-list')]/tbody/tr",
+    "content_list_xpath": "//table[contains(@class,'torrent-list')]/tbody/tr",
+    "title_content_xpath": "string(td[2]/a[last()])",
     "magnet_xpath": "string(td[3]/a[2]/@href)",
     "create_date_xpath": "string(td[5])",
     "size_xpath": "string(td[4])",
-    "popular_xpath": "string(td[8])"
+    "popular_xpath": "string(td[6])"
   },
-
   "torrentkitty": {
     "source_name": "torrentkitty",
-    "active": true,
+    "active": false,
     "base_url": "https://www.torrentkitty.tv",
     "query_tail": "/search/{keyword}/{page}",
     "sorted_by": {
@@ -103,10 +99,9 @@
     "size_xpath": "",
     "popular_xpath": ""
   },
-
   "ciliwang": {
     "source_name": "ciliwang",
-    "active": true,
+    "active": false,
     "base_url": "https://www.ciliwang.club",
     "query_tail": "/list.html?keyword={keyword}&sort={sorted_by}&page={page}",
     "sorted_by": {
@@ -124,10 +119,9 @@
     "size_xpath": "string(ul[2]/li[2]/span)",
     "popular_xpath": "string(ul[2]/li[3])"
   },
-
   "zooqle": {
     "source_name": "zooqle",
-    "active": true,
+    "active": false,
     "base_url": "https://zooqle.com",
     "query_tail": "/search?q={keyword}&s={sorted_by}&pg={page}",
     "sorted_by": {
@@ -136,7 +130,6 @@
       "size": "sz",
       "popular": "ns"
     },
-
     "proxy_channel": false,
     "judge_result_xpath": "/html/body/div[@id='body_container']/div[@class='row']/div[@class='col-md-9']/div[@class='panel zq-panel zq-small']/div[@class='panel-body']/table/tr",
     "content_list_xpath": "/html/body/div[@id='body_container']/div[@class='row']/div[@class='col-md-9']/div[@class='panel zq-panel zq-small']/div[@class='panel-body']/table/tr",
@@ -146,10 +139,9 @@
     "size_xpath": "string(td[@align='center'][1]/div/div)",
     "popular_xpath": "string(td[@align='center'][3]/div/div[1])"
   },
-
   "chazhongzi": {
     "source_name": "chazhongzi",
-    "active": true,
+    "active": false,
     "base_url": "https://chazhongzi.com",
     "query_tail": "/go/{keyword}/{sorted_by}/{page}",
     "sorted_by": {
@@ -167,10 +159,9 @@
     "size_xpath": "string(div[@class='card-action']/div[3]/b)",
     "popular_xpath": "string(div[@class='card-action']/div[4]/b)"
   },
-
   "ciliguo": {
     "source_name": "ciliguo",
-    "active": true,
+    "active": false,
     "base_url": "https://ciliguo.cc",
     "query_tail": "/search?q={keyword}&s={sorted_by}&p={page}",
     "sorted_by": {
@@ -188,7 +179,7 @@
     "size_xpath": "string(div[@class='card-footer']/div/div[2]/div[1]/div[2]/small)",
     "popular_xpath": "string(div[@class='card-footer']/div/div[2]/div[2]/div[1]/small)"
   },
-    "tokyotosho": {
+  "tokyotosho": {
     "source_name": "tokyotosho",
     "active": true,
     "base_url": "https://www.tokyotosho.info",
@@ -207,5 +198,25 @@
     "create_date_xpath": "substring-before(substring-after(string(following-sibling::tr[1]/td[1]),'Date: '), ' ')",
     "size_xpath": "substring-before(substring-after(string(following-sibling::tr[1]/td[1]),'Size:'), '|')",
     "popular_xpath": "string(following-sibling::tr[1]/td[2]/span[1])"
+  },
+  "piratebay": {
+    "source_name": "piratebay",
+    "active": true,
+    "base_url": "https://piratebayproxy.live",
+    "query_tail": "/search/{keyword}/{page}/{sorted_by}/0",
+    "sorted_by": {
+      "default": 8,
+      "date": 3,
+      "size": 5,
+      "popular": 8
+    },
+    "proxy_channel": true,
+    "judge_result_xpath": "//table[@id='searchResult']/tr[count(td)=8]",
+    "content_list_xpath": "//table[@id='searchResult']/tr[count(td)=8]",
+    "title_content_xpath": "string(td[2]/a)",
+    "magnet_xpath": "string(td[4]//a[starts-with(@href,'magnet:')]/@href)",
+    "create_date_xpath": "string(td[3])",
+    "size_xpath": "string(td[5])",
+    "popular_xpath": "string(td[6])"
   }
 }

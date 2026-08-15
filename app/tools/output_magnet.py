@@ -33,4 +33,4 @@ def output_magnet(magnet_list, output_path):
 
 def format_file_name(name):
     # 以搜索的关键词作为文件名时,去除windows文件路径中不允许使用的符号
-    return re.sub('\?|/|\||:|"|<|>|\*|\\\\', '', name)
+    return re.sub(r'\?|/|\||:|\"|<|>|\*|\\\\', '', name)
