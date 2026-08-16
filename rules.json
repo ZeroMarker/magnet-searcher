@@ -218,5 +218,25 @@
     "create_date_xpath": "string(td[3])",
     "size_xpath": "string(td[5])",
     "popular_xpath": "string(td[6])"
+  },
+  "wuqianso": {
+    "source_name": "wuqianso",
+    "active": true,
+    "base_url": "https://wuqianso.org",
+    "query_tail": "/search?keyword={keyword}&page={page}",
+    "sorted_by": {
+      "default": "",
+      "date": "",
+      "size": "",
+      "popular": ""
+    },
+    "proxy_channel": false,
+    "judge_result_xpath": "//div[contains(@class,'left')]/div[contains(@class,'media')]",
+    "content_list_xpath": "//div[contains(@class,'left')]/div[contains(@class,'media')]",
+    "title_content_xpath": "string(div[contains(@class,'media-body')]/h4[contains(@class,'media-heading')]/a)",
+    "magnet_xpath": "string(div[contains(@class,'media-body')]//a[starts-with(@href,'magnet:')]/@href)",
+    "create_date_xpath": "string(div[contains(@class,'media-body')]/div/span[1])",
+    "size_xpath": "string(div[contains(@class,'media-body')]/div/span[2])",
+    "popular_xpath": "string(div[contains(@class,'media-body')]/div/span[3])"
   }
 }

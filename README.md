@@ -132,8 +132,15 @@ request_time_out = 30
 | nyaa | https://nyaa.si | 动画/日系 | 匿名限速约 10 次/分钟, 超时自动跳过 |
 | piratebay | https://piratebayproxy.live | 通用资源 | 搜索结果页直接含磁链 |
 | tokyotosho | https://www.tokyotosho.info | 动画聚合 | 部分关键词相关性一般 |
+| wuqianso | https://wuqianso.org | 中文磁力聚合 | /search 有 Cloudflare/recaptcha 反爬, 且未在线验证过 XPath, 失败会自动跳过 |
 
 > 原配置的 btants/torrentkitty/ciliwang/zooqle/chazhongzi/ciliguo 等搜索源已失效(站点关闭或被反爬拦截)，已在 `rules.json` 中置为 `active: false`，如站点恢复可自行改回。
+
+### 关于 wuqianso（吴签磁力）
+
+- 搜索接口为 `GET /search?keyword={关键词}&page={页数}`，已在 rules.json 中按此配置。
+- 该站点 `/search` 受 Cloudflare Turnstile / reCAPTCHA 反爬保护（数据中心 IP 下必然拦截，住宅 IP 可能放行），且目前无法从服务器端在线验证结果页 HTML，`judge_result_xpath` 等提取规则是按站点模板（Bootstrap 3 + `.left` 列 + `media` 条目）推测的，**如从本地可访问该站且搜索结果为空，请在浏览器中打开 `https://wuqianso.org/search?keyword=测试` 查看实际 DOM，调整 rules.json 中 wuqianso 块的各 XPath**。
+- 该源排在最后，失败时工具会自动跳过，不影响其他源。
 
 ## 常见问题
 
